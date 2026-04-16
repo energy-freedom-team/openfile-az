@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "openfile-az"
+version = "0.1.0"
+description = "Generate AZ Secretary of State Committee Campaign Finance Reports from spreadsheets and config. Arizona-specific, open source, privacy-first."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+  { name = "Energy Freedom Team" }
+]
+keywords = ["arizona", "campaign-finance", "az-sos", "pdf", "government", "compliance"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: End Users/Desktop",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Office/Business",
+]
+dependencies = [
+  "pypdf>=5.0",
+  "pandas>=2.0",
+  "openpyxl>=3.1",
+  "reportlab>=4.0",
+  "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7",
+  "pytest-cov",
+  "ruff",
+]
+
+[project.urls]
+Homepage = "https://azfile.energyfreedom.team"
+Repository = "https://github.com/energy-freedom-team/openfile-az"
+Issues = "https://github.com/energy-freedom-team/openfile-az/issues"
+
+[project.scripts]
+openfile-az = "openfile_az.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["openfile_az*"]
+
+[tool.setuptools.package-data]
+openfile_az = ["data/*.pdf", "data/*.json"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

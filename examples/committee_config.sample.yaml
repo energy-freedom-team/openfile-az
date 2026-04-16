@@ -1,0 +1,71 @@
+# openfile-az committee config — example
+#
+# Copy this file to committee_config.yaml, fill in your info, then run:
+#     openfile-az generate --config committee_config.yaml
+#
+# All dollar amounts are USD. Dates are YYYY-MM-DD.
+
+committees:
+  # Candidate committee
+  - id: "9999001"                          # AZ SOS committee ID number
+    name: "Jane Example Election Committee"
+    candidate: "Jane Example"
+    treasurer: "Jane Example"
+    address: "123 Main St, Phoenix AZ 85016"
+    office_sought: "Example District 1"
+    office_type: "special_district"         # candidate | legislative | statewide | special_district | ballot | recall | party | pac
+    starting_balance_q1: 455.00             # Ending balance from prior filing (1/1 of reporting year)
+
+  - id: "9999002"
+    name: "Alex Example Election Committee"
+    candidate: "Alex Example"
+    treasurer: "Alex Example"
+    address: "123 Main St, Phoenix AZ 85016"
+    office_sought: "Example District 1"
+    office_type: "special_district"
+    starting_balance_q1: 0.00
+
+# One entry per filing period you want to generate. Multiple periods OK.
+reports:
+  - committee_id: "9999001"
+    period: "Q1"                            # Q1 | Q2 | Q3 | Q4 | pre_election | post_election
+    date_range: ["2026-01-01", "2026-03-31"]
+    filing_date: "2026-04-15"
+
+  - committee_id: "9999002"
+    period: "Q1"
+    date_range: ["2026-01-01", "2026-03-31"]
+    filing_date: "2026-04-15"
+
+  - committee_id: "9999001"
+    period: "pre_election"
+    date_range: ["2026-04-01", "2026-04-07"]
+    filing_date: "2026-04-22"
+
+  - committee_id: "9999002"
+    period: "pre_election"
+    date_range: ["2026-04-01", "2026-04-07"]
+    filing_date: "2026-04-22"
+
+# Optional: joint-fundraising rules. When a donor row's 'source' matches a 'campaign'
+# here, the gross amount is split per the 'split' map across committees.
+joint_fundraising:
+  - campaign: "Example Joint Campaign"
+    split:
+      "9999001": 0.5                        # John gets 50%
+      "9999002": 0.5                        # Sara gets 50%
+
+  - campaign: "Energy Freedom Team for Example District 1"
+    split:
+      "9999001": 1.0                        # John only
+
+# Optional: signature configuration. If you leave 'image' empty or the file is
+# missing, the tool falls back to a cursive typed electronic signature (accepted
+# under A.R.S. § 41-132).
+signatures:
+  "9999001":
+    image: ""                               # path to transparent PNG, optional
+    typed_name: "Jane Example"
+  "9999002":
+    image: ""
+    typed_name: "Alex Example"
