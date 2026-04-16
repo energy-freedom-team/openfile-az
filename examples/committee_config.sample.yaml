@@ -61,7 +61,7 @@ joint_fundraising:
 
 # Optional: signature configuration. If you leave 'image' empty or the file is
 # missing, the tool falls back to a cursive typed electronic signature (accepted
-# under A.R.S. § 41-132).
+# under A.R.S. § 44-7007).
 signatures:
   "9999001":
     image: ""                               # path to transparent PNG, optional

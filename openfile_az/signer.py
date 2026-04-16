@@ -3,7 +3,7 @@
 Two modes (image preferred, cursive-text fallback):
   • If the caller provides an image_path that exists on disk → uses the image.
   • Otherwise → renders the candidate's name in Brush Script as the typed
-    electronic signature (acceptable under AZ A.R.S. § 41-132 when the filer
+    electronic signature (acceptable under AZ A.R.S. § 44-7007 when the filer
     assents to electronic execution; the printed-name field on the same line
     serves as the typed-name attestation).
 
@@ -76,7 +76,7 @@ def _overlay_cursive(name: str):
     # Faint attestation marker indicating this is an electronic signature
     c.setFont("Helvetica", 6)
     c.setFillColorRGB(0.4, 0.4, 0.4)
-    c.drawString(SIG_X, SIG_Y - 8, "/s/ — typed electronic signature, A.R.S. § 41-132")
+    c.drawString(SIG_X, SIG_Y - 8, "/s/ — typed electronic signature, A.R.S. § 44-7007")
     c.showPage()
     c.save()
     buf.seek(0)

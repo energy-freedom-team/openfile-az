@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Generate Arizona Secretary of State Committee Campaign Finance Reports from spreadsheets. Runs entirely in your browser via WebAssembly — no server, no network transfer of your data, no tracking.">
+  <title>openfile-az — AZ Campaign Finance Reports</title>
+
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22><text y=%2224%22 font-size=%2224%22>📄</text></svg>">
+
+  <!-- Pyodide: served from local assets for true offline / self-host support.
+       Fallback to the official CDN if the local copy is missing. The
+       build script (scripts/build.py) populates web/dist/vendor/pyodide. -->
+  <script>
+    window.openfileAz = { buildInfo: null, pyodideReady: false };
+  </script>
+</head>
+
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="site-header">
+  <div class="container header-row">
+    <div>
+      <h1 class="site-title">openfile-az</h1>
+      <p class="site-sub">Arizona SOS Campaign Finance Reports, without the pain.</p>
+    </div>
+    <nav aria-label="primary">
+      <a href="https://github.com/energy-freedom-team/openfile-az" target="_blank" rel="noopener">GitHub</a>
+      <a href="#self-host">Self-host</a>
+      <a href="#privacy">Privacy</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main" class="container">
+
+  <section class="hero">
+    <h2>Fill your filing in 2 minutes.</h2>
+    <p class="lede">
+      Drop in your donor, disbursement, and debt spreadsheets. Get back a
+      signed PDF and Excel supplements ready to file with your committee's
+      designated filing officer. Your data never leaves your device.
+    </p>
+    <p class="hint">
+      Filing venue varies by committee type and jurisdiction (state, county,
+      city, or clean-elections). Check your committee's registration to
+      confirm where to submit.
+    </p>
+  </section>
+
+  <!-- =============== STATUS BAR =============== -->
+  <section class="status-bar" aria-live="polite">
+    <span class="status-dot" id="statusDot" data-state="loading"></span>
+    <span class="status-text" id="statusText">Loading Python runtime (first visit: ~10s, cached thereafter)…</span>
+  </section>
+
+  <!-- =============== TRY WITH SAMPLE DATA =============== -->
+  <section class="card sample-card" id="step-samples">
+    <header>
+      <h3>Try it with sample data</h3>
+      <p class="card-sub">
+        Don't want to load real data just to kick the tires? Download a
+        complete synthetic dataset — two fake committees, 41 fake donors
+        (mix of in-state, out-of-state, PACs, in-kind), 17 fake
+        disbursements (enough to exercise the 5-row page overflow), and
+        2 fake unpaid debts. Feed them to the forms above to see the
+        tool work end-to-end.
+      </p>
+    </header>
+    <div class="sample-links">
+      <a href="./samples/sample_committee_config.yaml" download>sample_committee_config.yaml</a>
+      <a href="./samples/sample_donors.xlsx" download>sample_donors.xlsx</a>
+      <a href="./samples/sample_donors.csv" download>sample_donors.csv</a>
+      <a href="./samples/sample_donors_givebutter.csv" download>sample_donors_givebutter.csv</a>
+      <a href="./samples/sample_disbursements.xlsx" download>sample_disbursements.xlsx</a>
+      <a href="./samples/sample_disbursements.csv" download>sample_disbursements.csv</a>
+      <a href="./samples/sample_debts.xlsx" download>sample_debts.xlsx</a>
+    </div>
+    <p class="hint">
+      All data is 100% synthetic — no real people, committees, vendors, or
+      addresses. The Givebutter-shaped CSV is identical content with
+      platform-style headers so you can see the column mapper auto-resolve
+      non-template layouts.
+    </p>
+  </section>
+
+  <!-- =============== COMMITTEE CONFIG =============== -->
+  <section class="card" id="step-config">
+    <header>
+      <h3>1. Committee</h3>
+      <p class="card-sub">Load a <code>committee_config.yaml</code>, or fill in the form below for a single committee.</p>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" class="tab active" data-tab="form">Fill in form</button>
+      <button role="tab" aria-selected="false" class="tab" data-tab="yaml">Load YAML</button>
+    </div>
+
+    <div class="tab-panel" data-panel="form">
+      <div class="grid-2">
+        <label>
+          <span>Committee ID</span>
+          <input type="text" id="cfgCmteId" placeholder="e.g., 9999001" autocomplete="off">
+        </label>
+        <label>
+          <span>Committee name</span>
+          <input type="text" id="cfgCmteName" placeholder="Example Election Committee" autocomplete="off">
+        </label>
+        <label>
+          <span>Candidate</span>
+          <input type="text" id="cfgCandidate" placeholder="Full legal name" autocomplete="off">
+        </label>
+        <label>
+          <span>Treasurer</span>
+          <input type="text" id="cfgTreasurer" placeholder="Full legal name" autocomplete="off">
+        </label>
+        <label class="col-span-2">
+          <span>Address</span>
+          <input type="text" id="cfgAddress" placeholder="123 Main St, Phoenix AZ 85001" autocomplete="off">
+        </label>
+        <label>
+          <span>Office sought</span>
+          <input type="text" id="cfgOffice" placeholder="e.g., City Council District 1" autocomplete="off">
+        </label>
+        <label>
+          <span>Office type</span>
+          <select id="cfgOfficeType">
+            <option value="candidate">Candidate</option>
+            <option value="legislative">Legislative</option>
+            <option value="statewide">Statewide</option>
+            <option value="special_district">Special district</option>
+            <option value="ballot">Ballot measure</option>
+            <option value="recall">Recall</option>
+            <option value="party">Party</option>
+            <option value="pac">PAC</option>
+          </select>
+        </label>
+        <label>
+          <span>Starting cash balance (USD)</span>
+          <input type="number" id="cfgStartBalance" step="0.01" value="0.00">
+        </label>
+        <label>
+          <span>Reporting period</span>
+          <select id="cfgPeriod">
+            <option value="Q1">Q1 (Jan 1 – Mar 31)</option>
+            <option value="Q2">Q2 (Apr 1 – Jun 30)</option>
+            <option value="Q3">Q3 (Jul 1 – Sep 30)</option>
+            <option value="Q4">Q4 (Oct 1 – Dec 31)</option>
+            <option value="pre_election">Pre-election</option>
+            <option value="post_election">Post-election</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="tab-panel hidden" data-panel="yaml">
+      <div class="drop-zone" id="dropConfig" data-accept=".yaml,.yml">
+        <p>Drop <code>committee_config.yaml</code> here or click to choose</p>
+        <input type="file" id="fileConfig" accept=".yaml,.yml" hidden>
+      </div>
+      <p class="hint"><a href="https://github.com/energy-freedom-team/openfile-az/blob/master/examples/committee_config.sample.yaml" target="_blank" rel="noopener">See the sample YAML schema →</a></p>
+    </div>
+  </section>
+
+  <!-- =============== SPREADSHEET INPUTS =============== -->
+  <section class="card" id="step-data">
+    <header>
+      <h3>2. Your data</h3>
+      <p class="card-sub">
+        Load your donor, disbursement, and debt data. Any CSV or XLSX with
+        the required fields works — you don't have to use our template. The
+        column-mapper will figure out which of your columns correspond to
+        which AZ schedule fields.
+      </p>
+    </header>
+
+    <div class="file-row">
+      <div class="file-col">
+        <label class="file-label">
+          <strong>Donors</strong>
+          <span class="badge required">Required</span>
+        </label>
+        <div class="drop-zone" id="dropDonors" data-accept=".csv,.xlsx,.xls">
+          <p>Drop CSV/XLSX or click to choose</p>
+          <input type="file" id="fileDonors" accept=".csv,.xlsx,.xls" hidden>
+        </div>
+        <div class="preview" id="previewDonors" hidden></div>
+        <p class="hint"><a href="./templates/donors_template.xlsx" download>Download blank template</a></p>
+      </div>
+
+      <div class="file-col">
+        <label class="file-label">
+          <strong>Disbursements</strong>
+          <span class="badge required">Required</span>
+        </label>
+        <div class="drop-zone" id="dropDisb" data-accept=".csv,.xlsx,.xls">
+          <p>Drop CSV/XLSX or click to choose</p>
+          <input type="file" id="fileDisb" accept=".csv,.xlsx,.xls" hidden>
+        </div>
+        <div class="preview" id="previewDisb" hidden></div>
+        <p class="hint"><a href="./templates/disbursements_template.xlsx" download>Download blank template</a></p>
+      </div>
+
+      <div class="file-col">
+        <label class="file-label">
+          <strong>Outstanding debts</strong>
+          <span class="badge optional">Optional</span>
+        </label>
+        <div class="drop-zone" id="dropDebts" data-accept=".csv,.xlsx,.xls">
+          <p>Drop CSV/XLSX or click to choose</p>
+          <input type="file" id="fileDebts" accept=".csv,.xlsx,.xls" hidden>
+        </div>
+        <div class="preview" id="previewDebts" hidden></div>
+        <p class="hint"><a href="./templates/debts_template.xlsx" download>Download blank template</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== SIGNATURE =============== -->
+  <section class="card" id="step-sign">
+    <header>
+      <h3>3. Signature</h3>
+      <p class="card-sub">
+        Choose how to sign. Typed electronic signatures are accepted under
+        <a href="https://www.azleg.gov/ars/44/07007.htm" target="_blank" rel="noopener">A.R.S. § 44-7007</a>.
+      </p>
+    </header>
+    <div class="sig-options">
+      <label class="sig-option">
+        <input type="radio" name="sigMode" value="cursive" checked>
+        <span>Typed cursive (recommended)</span>
+      </label>
+      <label class="sig-option">
+        <input type="radio" name="sigMode" value="image">
+        <span>Choose a signature image (PNG, transparent background)</span>
+      </label>
+      <div class="drop-zone small hidden" id="dropSig" data-accept=".png">
+        <p>Drop PNG or click to choose</p>
+        <input type="file" id="fileSig" accept=".png,image/png" hidden>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== GENERATE =============== -->
+  <section class="card generate-card" id="step-generate">
+    <header>
+      <h3>4. Generate</h3>
+      <p class="card-sub">Everything runs locally in your browser. Your files are never sent to a server — not even to us.</p>
+    </header>
+
+    <div class="summary" id="summary" hidden></div>
+
+    <button id="btnGenerate" class="btn btn-primary" disabled>
+      <span id="btnGenerateText">Generate filing</span>
+      <span class="spinner" id="btnSpinner" hidden></span>
+    </button>
+
+    <div class="results" id="results" hidden>
+      <h4>Your filing</h4>
+      <ul id="resultList"></ul>
+    </div>
+  </section>
+
+  <!-- =============== SELF-HOST SECTION =============== -->
+  <section class="card info" id="self-host">
+    <header>
+      <h3>Self-host this tool</h3>
+    </header>
+    <p>
+      This web app is <a href="https://github.com/energy-freedom-team/openfile-az" target="_blank" rel="noopener">open source</a>
+      and designed to self-host. Three ways:
+    </p>
+    <div class="self-host-grid">
+      <div>
+        <h4>Docker</h4>
+        <pre><code>docker run -p 8080:80 \
+  ghcr.io/energy-freedom-team/openfile-az:latest</code></pre>
+        <p class="hint">Open <code>http://localhost:8080</code>.</p>
+      </div>
+      <div>
+        <h4>Static files</h4>
+        <pre><code>pip install openfile-az
+openfile-az serve --port 8080</code></pre>
+        <p class="hint">Or drop <code>web/dist/</code> into any static host (nginx, Caddy, S3, GitHub Pages).</p>
+      </div>
+      <div>
+        <h4>Offline</h4>
+        <pre><code># unzip openfile-az-web-*.zip
+open index.html</code></pre>
+        <p class="hint">Works from a USB stick. No install, no network.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- =============== PRIVACY =============== -->
+  <section class="card info" id="privacy">
+    <header>
+      <h3>Privacy</h3>
+    </header>
+    <ul>
+      <li><strong>No network transfer.</strong> Your files are read locally in the browser. Nothing is sent to a server — not even to us.</li>
+      <li><strong>No tracking.</strong> No analytics. No cookies. No accounts.</li>
+      <li><strong>Verify it.</strong> Open DevTools → Network tab while generating a filing. You'll see zero outbound requests after page load.</li>
+      <li><strong>Turn off your wifi.</strong> Once loaded, the whole tool works offline.</li>
+      <li><strong>Audit it.</strong> <a href="https://github.com/energy-freedom-team/openfile-az" target="_blank" rel="noopener">Every line of code is on GitHub</a> under an MIT license.</li>
+    </ul>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <p>
+      <strong>openfile-az</strong> ·
+      <span id="buildInfo">v—</span> ·
+      <a href="https://github.com/energy-freedom-team/openfile-az" target="_blank" rel="noopener">Source</a> ·
+      <a href="https://github.com/energy-freedom-team/openfile-az/blob/master/LICENSE" target="_blank" rel="noopener">MIT License</a>
+    </p>
+    <p class="sponsor" id="sponsorFooter">
+      Hosted version sponsored by
+      <a href="https://energyfreedom.team" target="_blank" rel="noopener"><strong>Energy Freedom Team</strong></a>.
+    </p>
+    <p class="disclaimer">
+      Not affiliated with the Arizona Secretary of State. This tool formats data
+      — it does not provide legal or campaign-finance-compliance advice.
+    </p>
+  </div>
+</footer>
+
+<script src="./app.js" type="module"></script>
+</body>
+</html>

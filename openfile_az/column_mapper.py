@@ -1,7 +1,7 @@
-"""Flexible column mapping for user-uploaded CSV / XLSX files.
+"""Flexible column mapping for user-provided CSV / XLSX files.
 
 Users shouldn't have to copy their data into our exact template. They should
-be able to upload whatever CSV or XLSX they already have — a Givebutter
+be able to load whatever CSV or XLSX they already have — a Givebutter
 export, an ActBlue export, a bank statement, a committee treasurer's
 hand-maintained ledger — and have the tool figure out which of their
 columns correspond to our required fields.
@@ -309,7 +309,7 @@ class MappingResult:
     Attributes:
         mapping: dict of canonical → source column name. Ready-to-apply.
         missing: canonical names whose REQUIRED flag is True but no input
-            column matched. If non-empty, the upload should be rejected
+            column matched. If non-empty, the input should be rejected
             or a manual picker should be shown.
         ambiguous: dict of canonical → list of candidate input columns, when
             more than one input column plausibly matched. The first is used

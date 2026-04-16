@@ -1,0 +1,42 @@
+date,first,last,address,city,state,zip,email,occupation,employer,source,amount,kind,donor_type,pac_id,note
+2026-01-15,Skylar,Fake,5558 E Elm Dr,Tempe,AZ,85281,donor1@example.test,,Example Corp,Example Joint Campaign,250.0,cash,individual,,Joint fundraiser; 50/50 split handled by config
+2026-01-22,Cameron,Mock,3494 E Main Ln,Phoenix,AZ,85008,donor2@example.test,,Example University,Example Joint Campaign,500.0,cash,individual,,Joint fundraiser; 50/50 split handled by config
+2026-01-29,Kai,Synthetic,8253 E Main Dr,Gilbert,AZ,85233,donor3@example.test,Engineer,,Example Joint Campaign,250.0,cash,individual,,Joint fundraiser; 50/50 split handled by config
+2026-01-15,Parker,Sample,5277 E Palm Blvd,Scottsdale,AZ,85254,donor_small_00@example.test,,,Example Joint Campaign,100.0,cash,individual,,
+2026-01-16,Marlow,Fake,9223 E Main Ln,Chandler,AZ,85224,donor_small_01@example.test,,,Example Joint Campaign,5.01,cash,individual,,
+2026-01-17,Cameron,Placeholder,3695 E Cactus Rd,Gilbert,AZ,85295,donor_small_02@example.test,,,Example Joint Campaign,5.0,cash,individual,,
+2026-01-18,Jane,Notreal,4790 E Pine Blvd,Scottsdale,AZ,85251,donor_small_03@example.test,,,Example Joint Campaign,25.01,cash,individual,,
+2026-01-19,Nico,Example,9590 E Oak Rd,Mesa,AZ,85203,donor_small_04@example.test,,,Example Joint Campaign,75.01,cash,individual,,
+2026-01-20,Parker,Mock,860 E Desert Blvd,Mesa,AZ,85208,donor_small_05@example.test,,,Example Joint Campaign,100.0,cash,individual,,
+2026-01-21,Jordan,Imaginary,4587 E Desert Rd,Tempe,AZ,85284,donor_small_06@example.test,,,Example Joint Campaign,50.0,cash,individual,,
+2026-01-22,Sam,Example,9933 E Main Ln,Scottsdale,AZ,85260,donor_small_07@example.test,,,Example Joint Campaign,75.01,cash,individual,,
+2026-01-23,Riley,Testing,1117 E Elm Dr,Gilbert,AZ,85234,donor_small_08@example.test,,,Example Joint Campaign,100.0,cash,individual,,
+2026-01-24,Cameron,Testing,4660 E Elm Rd,Mesa,AZ,85208,donor_small_09@example.test,,,Example Joint Campaign,75.01,cash,individual,,
+2026-01-25,Hayden,Imaginary,502 E Main Blvd,Chandler,AZ,85286,donor_small_10@example.test,,,Example Joint Campaign,75.0,cash,individual,,
+2026-01-26,Parker,Testing,9577 E Main Rd,Mesa,AZ,85203,donor_small_11@example.test,,,Example Joint Campaign,5.0,cash,individual,,
+2026-01-27,Sage,Imaginary,690 E Mesa St,Chandler,AZ,85224,donor_small_12@example.test,,,Example Joint Campaign,55.01,cash,individual,,
+2026-01-28,Kai,Synthetic,2850 E Cactus Rd,Mesa,AZ,85208,donor_small_13@example.test,,,Example Joint Campaign,25.01,cash,individual,,
+2026-01-29,Avery,Notreal,7521 E Desert Ln,Chandler,AZ,85226,donor_small_14@example.test,,,Example Joint Campaign,50.0,cash,individual,,
+2026-01-30,Kai,Mock,9428 E Main Blvd,Mesa,AZ,85213,donor_small_15@example.test,,,Example Joint Campaign,75.01,cash,individual,,
+2026-01-31,Casey,Testing,762 E Oak Ave,Scottsdale,AZ,85260,donor_small_16@example.test,,,Example Joint Campaign,75.01,cash,individual,,
+2026-02-01,Sam,Stand-In,6575 E Main St,Phoenix,AZ,85004,donor_small_17@example.test,,,Example Joint Campaign,10.01,cash,individual,,
+2026-02-02,Kai,Mock,6217 E Desert Dr,Gilbert,AZ,85296,donor_small_18@example.test,,,Example Joint Campaign,10.01,cash,individual,,
+2026-02-03,Avery,Notreal,1165 E Oak Dr,Scottsdale,AZ,85251,donor_small_19@example.test,,,Example Joint Campaign,75.0,cash,individual,,
+2026-02-04,Avery,Mock,877 E Cactus Blvd,Phoenix,AZ,85016,donor_small_20@example.test,,,Example Joint Campaign,50.01,cash,individual,,
+2026-02-05,River,Fictional,434 E Palm Ave,Glendale,AZ,85301,donor_small_21@example.test,,,Example Joint Campaign,5.01,cash,individual,,
+2026-02-06,Finley,Demo,153 E Elm St,Scottsdale,AZ,85251,donor_small_22@example.test,,,Example Joint Campaign,75.01,cash,individual,,
+2026-02-07,Logan,Stand-In,328 E Cactus Dr,Glendale,AZ,85308,donor_small_23@example.test,,,Example Joint Campaign,25.0,cash,individual,,
+2026-02-08,Kendall,Placeholder,7764 E Oak Ave,Scottsdale,AZ,85251,donor_small_24@example.test,,,Example Joint Campaign,5.01,cash,individual,,
+2026-02-09,Peyton,Demo,9392 E Cactus St,Scottsdale,AZ,85251,donor_small_25@example.test,,,Example Joint Campaign,5.0,cash,individual,,
+2026-02-10,Alex,Example,2573 E Elm St,Glendale,AZ,85301,donor_small_26@example.test,,,Example Joint Campaign,10.0,cash,individual,,
+2026-02-11,Jordan,Synthetic,2029 E Mesa Ln,Phoenix,AZ,85012,donor_small_27@example.test,,,Example Joint Campaign,75.01,cash,individual,,
+2026-02-12,Quinn,Sample,8231 E Cactus Ln,Phoenix,AZ,85012,donor_small_28@example.test,,,Example Joint Campaign,75.01,cash,individual,,
+2026-02-13,Hayden,Fictional,1507 E Pine Ln,Phoenix,AZ,85008,donor_small_29@example.test,,,Example Joint Campaign,5.01,cash,individual,,
+2026-02-19,Skylar,Notreal,3679 Park St,Herriman,UT,84096,donor_oos_1@example.test,,,Example Joint Campaign,25.0,cash,individual,,OOS donor
+2026-02-20,Jamie,Synthetic,4152 Main St,Boone,NC,28607,donor_oos_2@example.test,,,Example Joint Campaign,50.0,cash,individual,,OOS donor
+2026-02-21,Sam,Placeholder,2233 Main Rd,Columbia,MO,65201,donor_oos_3@example.test,,,Example Joint Campaign,25.0,cash,individual,,OOS donor
+2026-02-22,Logan,Demo,4649 Park St,Herriman,UT,84096,donor_oos_4@example.test,,,Example Joint Campaign,50.0,cash,individual,,OOS donor
+2026-02-23,Sydney,Stand-In,550 1st Ave,Beaverton,OR,97007,donor_oos_5@example.test,,,Example Joint Campaign,25.01,cash,individual,,OOS donor
+2026-03-24,,Example Climate PAC,100 Example Ave,Washington,DC,20001,,,,check,2000.0,cash,pac,C00000000,Independent expenditure PAC
+2026-03-07,,Example State PAC,PO Box 1,Tucson,AZ,85701,,,,check,250.0,cash,pac,200000000,Local advocacy PAC
+2026-03-31,,Example Advocacy PAC,200 Example Blvd,Los Angeles,CA,90029,,,,in_kind_services,159.7,in_kind,pac,C00000001,March staff / phone / text services

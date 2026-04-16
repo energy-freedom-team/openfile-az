@@ -1,0 +1,39 @@
+Campaign Title,First Name,Last Name,Email,Phone,Address Line 1,City,State,Postal Code,Country,Amount,Fee,Transaction Date (UTC),Method,Internal Note
+Example Joint Campaign,Skylar,Fake,donor1@example.test,,5558 E Elm Dr,Tempe,AZ,85281,US,$250.00,$0.00,2026-01-15 00:00:00,card,Joint fundraiser; 50/50 split handled by config
+Example Joint Campaign,Cameron,Mock,donor2@example.test,,3494 E Main Ln,Phoenix,AZ,85008,US,$500.00,$0.00,2026-01-22 00:00:00,card,Joint fundraiser; 50/50 split handled by config
+Example Joint Campaign,Kai,Synthetic,donor3@example.test,,8253 E Main Dr,Gilbert,AZ,85233,US,$250.00,$0.00,2026-01-29 00:00:00,card,Joint fundraiser; 50/50 split handled by config
+Example Joint Campaign,Parker,Sample,donor_small_00@example.test,,5277 E Palm Blvd,Scottsdale,AZ,85254,US,$100.00,$0.00,2026-01-15 00:00:00,card,
+Example Joint Campaign,Marlow,Fake,donor_small_01@example.test,,9223 E Main Ln,Chandler,AZ,85224,US,$5.01,$0.00,2026-01-16 00:00:00,card,
+Example Joint Campaign,Cameron,Placeholder,donor_small_02@example.test,,3695 E Cactus Rd,Gilbert,AZ,85295,US,$5.00,$0.00,2026-01-17 00:00:00,card,
+Example Joint Campaign,Jane,Notreal,donor_small_03@example.test,,4790 E Pine Blvd,Scottsdale,AZ,85251,US,$25.01,$0.00,2026-01-18 00:00:00,card,
+Example Joint Campaign,Nico,Example,donor_small_04@example.test,,9590 E Oak Rd,Mesa,AZ,85203,US,$75.01,$0.00,2026-01-19 00:00:00,card,
+Example Joint Campaign,Parker,Mock,donor_small_05@example.test,,860 E Desert Blvd,Mesa,AZ,85208,US,$100.00,$0.00,2026-01-20 00:00:00,card,
+Example Joint Campaign,Jordan,Imaginary,donor_small_06@example.test,,4587 E Desert Rd,Tempe,AZ,85284,US,$50.00,$0.00,2026-01-21 00:00:00,card,
+Example Joint Campaign,Sam,Example,donor_small_07@example.test,,9933 E Main Ln,Scottsdale,AZ,85260,US,$75.01,$0.00,2026-01-22 00:00:00,card,
+Example Joint Campaign,Riley,Testing,donor_small_08@example.test,,1117 E Elm Dr,Gilbert,AZ,85234,US,$100.00,$0.00,2026-01-23 00:00:00,card,
+Example Joint Campaign,Cameron,Testing,donor_small_09@example.test,,4660 E Elm Rd,Mesa,AZ,85208,US,$75.01,$0.00,2026-01-24 00:00:00,card,
+Example Joint Campaign,Hayden,Imaginary,donor_small_10@example.test,,502 E Main Blvd,Chandler,AZ,85286,US,$75.00,$0.00,2026-01-25 00:00:00,card,
+Example Joint Campaign,Parker,Testing,donor_small_11@example.test,,9577 E Main Rd,Mesa,AZ,85203,US,$5.00,$0.00,2026-01-26 00:00:00,card,
+Example Joint Campaign,Sage,Imaginary,donor_small_12@example.test,,690 E Mesa St,Chandler,AZ,85224,US,$55.01,$0.00,2026-01-27 00:00:00,card,
+Example Joint Campaign,Kai,Synthetic,donor_small_13@example.test,,2850 E Cactus Rd,Mesa,AZ,85208,US,$25.01,$0.00,2026-01-28 00:00:00,card,
+Example Joint Campaign,Avery,Notreal,donor_small_14@example.test,,7521 E Desert Ln,Chandler,AZ,85226,US,$50.00,$0.00,2026-01-29 00:00:00,card,
+Example Joint Campaign,Kai,Mock,donor_small_15@example.test,,9428 E Main Blvd,Mesa,AZ,85213,US,$75.01,$0.00,2026-01-30 00:00:00,card,
+Example Joint Campaign,Casey,Testing,donor_small_16@example.test,,762 E Oak Ave,Scottsdale,AZ,85260,US,$75.01,$0.00,2026-01-31 00:00:00,card,
+Example Joint Campaign,Sam,Stand-In,donor_small_17@example.test,,6575 E Main St,Phoenix,AZ,85004,US,$10.01,$0.00,2026-02-01 00:00:00,card,
+Example Joint Campaign,Kai,Mock,donor_small_18@example.test,,6217 E Desert Dr,Gilbert,AZ,85296,US,$10.01,$0.00,2026-02-02 00:00:00,card,
+Example Joint Campaign,Avery,Notreal,donor_small_19@example.test,,1165 E Oak Dr,Scottsdale,AZ,85251,US,$75.00,$0.00,2026-02-03 00:00:00,card,
+Example Joint Campaign,Avery,Mock,donor_small_20@example.test,,877 E Cactus Blvd,Phoenix,AZ,85016,US,$50.01,$0.00,2026-02-04 00:00:00,card,
+Example Joint Campaign,River,Fictional,donor_small_21@example.test,,434 E Palm Ave,Glendale,AZ,85301,US,$5.01,$0.00,2026-02-05 00:00:00,card,
+Example Joint Campaign,Finley,Demo,donor_small_22@example.test,,153 E Elm St,Scottsdale,AZ,85251,US,$75.01,$0.00,2026-02-06 00:00:00,card,
+Example Joint Campaign,Logan,Stand-In,donor_small_23@example.test,,328 E Cactus Dr,Glendale,AZ,85308,US,$25.00,$0.00,2026-02-07 00:00:00,card,
+Example Joint Campaign,Kendall,Placeholder,donor_small_24@example.test,,7764 E Oak Ave,Scottsdale,AZ,85251,US,$5.01,$0.00,2026-02-08 00:00:00,card,
+Example Joint Campaign,Peyton,Demo,donor_small_25@example.test,,9392 E Cactus St,Scottsdale,AZ,85251,US,$5.00,$0.00,2026-02-09 00:00:00,card,
+Example Joint Campaign,Alex,Example,donor_small_26@example.test,,2573 E Elm St,Glendale,AZ,85301,US,$10.00,$0.00,2026-02-10 00:00:00,card,
+Example Joint Campaign,Jordan,Synthetic,donor_small_27@example.test,,2029 E Mesa Ln,Phoenix,AZ,85012,US,$75.01,$0.00,2026-02-11 00:00:00,card,
+Example Joint Campaign,Quinn,Sample,donor_small_28@example.test,,8231 E Cactus Ln,Phoenix,AZ,85012,US,$75.01,$0.00,2026-02-12 00:00:00,card,
+Example Joint Campaign,Hayden,Fictional,donor_small_29@example.test,,1507 E Pine Ln,Phoenix,AZ,85008,US,$5.01,$0.00,2026-02-13 00:00:00,card,
+Example Joint Campaign,Skylar,Notreal,donor_oos_1@example.test,,3679 Park St,Herriman,UT,84096,US,$25.00,$0.00,2026-02-19 00:00:00,card,OOS donor
+Example Joint Campaign,Jamie,Synthetic,donor_oos_2@example.test,,4152 Main St,Boone,NC,28607,US,$50.00,$0.00,2026-02-20 00:00:00,card,OOS donor
+Example Joint Campaign,Sam,Placeholder,donor_oos_3@example.test,,2233 Main Rd,Columbia,MO,65201,US,$25.00,$0.00,2026-02-21 00:00:00,card,OOS donor
+Example Joint Campaign,Logan,Demo,donor_oos_4@example.test,,4649 Park St,Herriman,UT,84096,US,$50.00,$0.00,2026-02-22 00:00:00,card,OOS donor
+Example Joint Campaign,Sydney,Stand-In,donor_oos_5@example.test,,550 1st Ave,Beaverton,OR,97007,US,$25.01,$0.00,2026-02-23 00:00:00,card,OOS donor

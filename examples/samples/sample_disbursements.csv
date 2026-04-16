@@ -1,0 +1,18 @@
+date,payee,address,city,state,zip,category,amount,schedule,payment_method,recipient_committee_id,note
+2026-03-31,Example Print Vendor A,100 Print Rd,Phoenix,AZ,85001,Print / mailer,509.26,B(1),cash,,Q1 mailer batch 1
+2026-03-31,Example Print Vendor B,200 Print Rd,Phoenix,AZ,85001,Print / mailer,1021.86,B(1),cash,,Q1 mailer batch 2
+2026-03-15,Example Sign Shop,300 Trade Way,Austin,TX,78701,Door hangers,67.75,B(1),cash,,
+2026-03-20,Example Flyer Co,400 Beach Blvd,Huntington Beach,CA,92601,Door hangers,100.58,B(1),cash,,
+2026-03-05,Example Card Printer,500 Henderson Rd,Columbus,OH,43201,Business cards,77.64,B(1),cash,,
+2026-03-31,Example AI Tool,600 Market St,San Francisco,CA,94101,SaaS — AI subscription,213.42,B(1),credit,,
+2026-03-31,Example Routing API,700 Market St,San Francisco,CA,94101,SaaS — AI API,116.02,B(1),credit,,
+2026-03-31,Example Hosting Co,800 Barranca Ave,Covina,CA,91701,SaaS — hosting,40.31,B(1),credit,,
+2026-03-31,Example EU Hosting,900 Industrie Str,Berlin,DE,10115,SaaS — hosting (overseas),6.87,B(1),credit,,
+2026-03-31,Example Design App,1000 Design Ln,Sydney,AU,2000,SaaS — design,8.19,B(1),credit,,
+2026-03-31,Example Maps API,1100 Map Ave,Washington,DC,20001,SaaS — mapping,14.73,B(1),credit,,
+2026-03-31,Example Office Suite,1200 Campus Dr,Mountain View,CA,94001,SaaS — email/office,50.49,B(1),credit,,
+2026-03-31,Example Telephony API,1300 Market St,San Francisco,CA,94101,SaaS — telephony,17.51,B(1),credit,,
+2026-03-31,Example Platform Fee,1400 Agent Rd,Wilmington,DE,19801,Credit card processing,5.7,B(1),cash,,Gross donations $1650; fee $5.70
+2026-02-14,Example Venue,1500 Event Blvd,Phoenix,AZ,85003,Fundraiser venue rental,450.0,B(1),cash,,Kickoff event 2/14
+2026-03-22,Example Catering,1600 Taco St,Tempe,AZ,85281,Volunteer food,127.5,B(1),cash,,
+2026-03-10,Example Web Services,1700 Nameserver Ln,Scottsdale,AZ,85260,Domain + email hosting,25.99,B(1),credit,,Annual renewal

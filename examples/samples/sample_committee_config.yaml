@@ -1,0 +1,46 @@
+# openfile-az SAMPLE committee config
+# 100% synthetic — no real committees or people.
+# Safe to share. Use as a starting point for your own filing.
+
+committees:
+- id: '9999001'
+  name: Jane Example Election Committee
+  candidate: Jane Example
+  treasurer: Jane Example
+  address: 123 Main St, Phoenix AZ 85001
+  office_sought: Example District 1
+  office_type: special_district
+  starting_balance_q1: 500.0
+- id: '9999002'
+  name: Alex Example Election Committee
+  candidate: Alex Example
+  treasurer: Alex Example
+  address: 123 Main St, Phoenix AZ 85001
+  office_sought: Example District 1
+  office_type: special_district
+  starting_balance_q1: 0.0
+reports:
+- committee_id: '9999001'
+  period: Q1
+  date_range:
+  - '2026-01-01'
+  - '2026-03-31'
+  filing_date: '2026-04-15'
+- committee_id: '9999002'
+  period: Q1
+  date_range:
+  - '2026-01-01'
+  - '2026-03-31'
+  filing_date: '2026-04-15'
+joint_fundraising:
+- campaign: Example Joint Campaign
+  split:
+    '9999001': 0.5
+    '9999002': 0.5
+signatures:
+  '9999001':
+    image: ''
+    typed_name: Jane Example
+  '9999002':
+    image: ''
+    typed_name: Alex Example
