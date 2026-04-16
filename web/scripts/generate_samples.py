@@ -278,6 +278,84 @@ def write_donors(rows):
             })
     print(f"wrote {gb_path}")
 
+    # CSV with ActBlue-style headers (43 columns; only individual cash rows
+    # since ActBlue doesn't carry PAC or in-kind records).
+    ab_path = OUT / "sample_donors_actblue.csv"
+    with open(ab_path, "w", newline="") as f:
+        fieldnames = [
+            "Lineitem ID", "Order Number", "Processor Txn ID", "Amount", "Txn Amount",
+            "Stripe Fee Amount", "Fee", "Net Settlement", "Contribution Datetime",
+            "Paid At", "Created Datetime", "Payout Datetime", "Transaction Type",
+            "Description", "Is Recurring", "Recurrence Number", "Pledged Recurring Duration",
+            "Recipient", "Recipient Committee", "Recipient ID", "Recipient Gov ID",
+            "Donor First Name", "Donor Last Name", "Donor Address Line 1", "Donor City",
+            "Donor State", "Donor ZIP", "Donor Country", "Donor Occupation", "Donor Employer",
+            "Donor Email", "Donor Phone", "Employer Address Line 1", "Employer City",
+            "Employer State", "Employer Zip", "Employer Country", "Via Mobile",
+            "Recurring Amount", "Initial Recurring Contribution Date", "Cancelled Recurring?",
+            "Donor U.S. Passport Number", "Payment Method",
+        ]
+        w = csv.DictWriter(f, fieldnames=fieldnames)
+        w.writeheader()
+        line_seq = 1000
+        for row in rows:
+            if row["donor_type"] != "individual" or row["kind"] != "cash":
+                continue
+            line_seq += 1
+            d = row["date"]
+            dt_str = d.strftime("%Y-%m-%d %H:%M:%S UTC") if isinstance(d, date) else str(d)
+            d_str = d.strftime("%Y-%m-%d") if isinstance(d, date) else str(d)
+            gross = row["amount"]
+            # Synthetic processor fee for realism (not representative of actual fees)
+            fee = round(gross * 0.04 + 0.30, 2)
+            net = round(gross - fee, 2)
+            w.writerow({
+                "Lineitem ID": f"L{line_seq:09d}",
+                "Order Number": f"O{line_seq:09d}",
+                "Processor Txn ID": f"ch_{line_seq:024x}",
+                "Amount": f"{gross:.2f}",
+                "Txn Amount": f"{gross:.2f}",
+                "Stripe Fee Amount": f"{fee:.2f}",
+                "Fee": f"{fee:.2f}",
+                "Net Settlement": f"{net:.2f}",
+                "Contribution Datetime": dt_str,
+                "Paid At": dt_str,
+                "Created Datetime": dt_str,
+                "Payout Datetime": d_str,
+                "Transaction Type": "contribution",
+                "Description": row["source"],
+                "Is Recurring": "false",
+                "Recurrence Number": "",
+                "Pledged Recurring Duration": "",
+                "Recipient": "Example Slate",
+                "Recipient Committee": "Jane Example Election Committee",
+                "Recipient ID": "9999001",
+                "Recipient Gov ID": "",
+                "Donor First Name": row["first"],
+                "Donor Last Name": row["last"],
+                "Donor Address Line 1": row["address"],
+                "Donor City": row["city"],
+                "Donor State": row["state"],
+                "Donor ZIP": row["zip"],
+                "Donor Country": "US",
+                "Donor Occupation": row["occupation"],
+                "Donor Employer": row["employer"],
+                "Donor Email": row["email"],
+                "Donor Phone": "",
+                "Employer Address Line 1": "",
+                "Employer City": "",
+                "Employer State": "",
+                "Employer Zip": "",
+                "Employer Country": "",
+                "Via Mobile": "false",
+                "Recurring Amount": "",
+                "Initial Recurring Contribution Date": "",
+                "Cancelled Recurring?": "",
+                "Donor U.S. Passport Number": "",
+                "Payment Method": "card",
+            })
+    print(f"wrote {ab_path}")
+
 
 # ---------------------------------------------------------------------------
 # Disbursements — 17 vendors to exercise 5-row-per-page overflow
@@ -403,7 +481,8 @@ These files exist so you can:
 | `sample_committee_config.yaml` | Two joint-fundraising committees |
 | `sample_donors.xlsx` | 41 donors: 3 large in-state, 30 small in-state, 5 OOS, 2 PACs, 1 in-kind |
 | `sample_donors.csv` | Same data, CSV form |
-| `sample_donors_givebutter.csv` | Same individual donors, Givebutter export shape — tests the column mapper's platform-specific aliases |
+| `sample_donors_givebutter.csv` | Same individual donors, Givebutter export shape |
+| `sample_donors_actblue.csv` | Same individual donors, ActBlue export shape (43 columns, "Donor X" prefixed, Contribution Datetime) — the most common platform export pattern |
 | `sample_disbursements.xlsx` | 17 operating expenses (exceeds 5-row page → generates Excel supplement) |
 | `sample_disbursements.csv` | Same data, CSV form |
 | `sample_debts.xlsx` | 2 unpaid obligations (Schedule B(12)) |

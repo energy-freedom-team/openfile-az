@@ -56,9 +56,17 @@ DONOR_FIELDS: Mapping[str, dict] = {
     "date": {
         "required": True,
         "aliases": [
-            "date", "transaction date", "transaction date (utc)", "contribution date",
-            "received date", "gift date", "donation date", "payment date",
-            "timestamp", "date received", "payment captured (utc)",
+            # Our template + generic
+            "date", "received date", "date received", "timestamp",
+            # Generic platform
+            "transaction date", "contribution date", "gift date", "donation date",
+            "payment date",
+            # Givebutter
+            "transaction date (utc)", "payment captured (utc)",
+            # ActBlue — exports use "Contribution Datetime" as the canonical
+            # donor-intent timestamp. "Paid At" is when the card settled.
+            # "Created Datetime" / "Payout Datetime" are kept as extras.
+            "contribution datetime", "paid at",
         ],
     },
     "first": {
