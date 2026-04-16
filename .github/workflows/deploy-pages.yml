@@ -1,0 +1,83 @@
+# Deploy the openfile-az static web bundle to GitHub Pages.
+#
+# Builds on every push to master (and on manual dispatch), then publishes
+# web/dist/ to the github.io site. No data flows through GitHub beyond
+# the static files — the runtime still executes entirely in the visitor's
+# browser.
+#
+# Default URL: https://energy-freedom-team.github.io/openfile-az/
+# Custom domain: configure via repo Settings → Pages → Custom domain,
+# then add a CNAME record at your DNS host pointing to
+# energy-freedom-team.github.io.
+#
+# Security note: no step in this workflow interpolates untrusted GitHub
+# event payloads into shell commands. All run: blocks use static
+# literals only.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyyaml openpyxl pandas
+
+      - name: Generate sample data
+        run: python3 web/scripts/generate_samples.py
+
+      - name: Build static bundle
+        # Pyodide loads from the jsdelivr CDN in the hosted build. For
+        # fully-offline builds (self-host / air-gapped), add
+        # --with-pyodide (adds ~12MB to the bundle).
+        run: python3 web/scripts/build.py
+
+      - name: Confirm bundle contents
+        run: |
+          echo "=== web/dist/ ==="
+          ls -la web/dist/
+          echo "=== samples ==="
+          ls web/dist/samples/
+          echo "=== templates ==="
+          ls web/dist/templates/
+          echo "=== bundle size ==="
+          du -sh web/dist/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
