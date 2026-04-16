@@ -105,13 +105,12 @@ function setStatus(stateName, text) {
 }
 
 function updateGenerateReadiness() {
-  // Enable the Generate button only when Pyodide is ready and we have the
-  // minimum required inputs.
-  const minReady =
-    window.openfileAz.pyodideReady &&
-    state.files.donors &&
-    state.files.disbursements &&
-    (state.configSource === "form" ? state.configForm.cmteId : state.files.config);
+  // Enable the Generate button when Pyodide is ready AND we have the
+  // minimum required inputs (files OR manual entries for donors + disbursements).
+  const hasDonors = (state.files.donors.length > 0) || (state.manualEntries.donors.length > 0);
+  const hasDisb   = (state.files.disbursements.length > 0) || (state.manualEntries.disbursements.length > 0);
+  const hasConfig = state.configSource === "form" ? state.configForm.cmteId : state.files.config;
+  const minReady  = window.openfileAz.pyodideReady && hasDonors && hasDisb && hasConfig;
   els.btnGenerate.disabled = !minReady;
 }
 
@@ -135,18 +134,92 @@ function wireDropZone(zoneId, inputId, stateKey, previewId) {
   });
 
   input.addEventListener("change", async () => {
-    const f = input.files[0];
-    if (!f) return;
-    state.files[stateKey] = f;
+    const newFiles = Array.from(input.files);
+    if (!newFiles.length) return;
+
+    // Multi-file categories (donors, disbursements, debts) accumulate;
+    // single-file categories (config, sig) replace.
+    const isMulti = Array.isArray(state.files[stateKey]);
+    if (isMulti) {
+      state.files[stateKey].push(...newFiles);
+    } else {
+      state.files[stateKey] = newFiles[0];
+    }
+
     zone.classList.add("filled");
     if (preview) {
       preview.hidden = false;
-      preview.textContent = `${f.name} (${(f.size/1024).toFixed(1)} kB)`;
-      // Preview column-mapping once Pyodide is ready and the file is a donor
-      // / disbursement / debt spreadsheet.
-      if (window.openfileAz.pyodideReady && ["donors","disbursements","debts"].includes(stateKey)) {
-        previewMapping(stateKey, f, preview);
+      if (isMulti) {
+        const all = state.files[stateKey];
+        const totalKB = all.reduce((s, f) => s + f.size, 0) / 1024;
+        preview.textContent = `${all.length} file(s), ${totalKB.toFixed(1)} kB total: ${all.map(f => f.name).join(", ")}`;
+        // Preview the most recently added file's column mapping
+        if (window.openfileAz.pyodideReady && ["donors","disbursements","debts"].includes(stateKey)) {
+          previewMapping(stateKey, newFiles[newFiles.length - 1], preview);
+        }
+      } else {
+        const f = newFiles[0];
+        preview.textContent = `${f.name} (${(f.size/1024).toFixed(1)} kB)`;
       }
+    }
+    updateGenerateReadiness();
+  });
+}
+
+
+// --- Manual entry forms ------------------------------------------------------
+
+function wireManualEntry(btnId, formId, tableId, stateKey, displayCols) {
+  const btn   = document.getElementById(btnId);
+  const form  = document.getElementById(formId);
+  const table = document.getElementById(tableId);
+  const tbody = table.querySelector("tbody");
+
+  btn.addEventListener("click", () => {
+    // Collect all data-field inputs from the form
+    const entry = {};
+    let hasRequired = true;
+    for (const inp of form.querySelectorAll("[data-field]")) {
+      const key = inp.dataset.field;
+      const val = inp.value.trim();
+      entry[key] = val;
+      if (inp.required && !val) hasRequired = false;
+    }
+    if (!hasRequired) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    state.manualEntries[stateKey].push(entry);
+
+    // Render the row in the preview table
+    table.hidden = false;
+    const tr = document.createElement("tr");
+    for (const col of displayCols) {
+      const td = document.createElement("td");
+      td.textContent = entry[col] || "";
+      tr.appendChild(td);
+    }
+    // Remove button
+    const tdDel = document.createElement("td");
+    const btnRm = document.createElement("button");
+    btnRm.className = "btn-remove";
+    btnRm.textContent = "remove";
+    btnRm.addEventListener("click", () => {
+      const idx = state.manualEntries[stateKey].indexOf(entry);
+      if (idx >= 0) state.manualEntries[stateKey].splice(idx, 1);
+      tr.remove();
+      if (!tbody.children.length) table.hidden = true;
+      updateGenerateReadiness();
+    });
+    tdDel.appendChild(btnRm);
+    tr.appendChild(tdDel);
+    tbody.appendChild(tr);
+
+    // Clear the form inputs for the next entry
+    for (const inp of form.querySelectorAll("[data-field]")) {
+      if (inp.tagName === "SELECT") continue; // keep dropdowns at current selection
+      inp.value = "";
     }
     updateGenerateReadiness();
   });
@@ -284,12 +357,20 @@ function renderResults(result) {
 async function boot() {
   uiInit();
 
-  // Wire drop zones
+  // Wire drop zones (multi-file for donors/disbursements/debts)
   wireDropZone("dropConfig", "fileConfig", "config", null);
   wireDropZone("dropDonors", "fileDonors", "donors", "previewDonors");
   wireDropZone("dropDisb",   "fileDisb",   "disbursements", "previewDisb");
   wireDropZone("dropDebts",  "fileDebts",  "debts", "previewDebts");
   wireDropZone("dropSig",    "fileSig",    "sig", null);
+
+  // Wire manual-entry forms
+  wireManualEntry("btnAddDonor", "formDonor", "tableDonor", "donors",
+                  ["date", "last", "amount", "kind", "donor_type"]);
+  wireManualEntry("btnAddDisb",  "formDisb",  "tableDisb",  "disbursements",
+                  ["date", "payee", "amount", "category"]);
+  wireManualEntry("btnAddDebt",  "formDebt",  "tableDebt",  "debts",
+                  ["date_incurred", "creditor", "amount_outstanding", "type_of_debt"]);
 
   // Form → state
   const cfgIds = [

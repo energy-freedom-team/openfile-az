@@ -184,9 +184,9 @@
           <strong>Donors</strong>
           <span class="badge required">Required</span>
         </label>
-        <div class="drop-zone" id="dropDonors" data-accept=".csv,.xlsx,.xls">
-          <p>Drop CSV/XLSX or click to choose</p>
-          <input type="file" id="fileDonors" accept=".csv,.xlsx,.xls" hidden>
+        <div class="drop-zone" id="dropDonors" data-accept=".csv,.xlsx,.xls" data-multi="true">
+          <p>Drop CSV/XLSX or click to choose (multiple files OK)</p>
+          <input type="file" id="fileDonors" accept=".csv,.xlsx,.xls" hidden multiple>
         </div>
         <div class="preview" id="previewDonors" hidden></div>
         <p class="hint"><a href="./templates/donors_template.xlsx" download>Download blank template</a></p>
@@ -197,9 +197,9 @@
           <strong>Disbursements</strong>
           <span class="badge required">Required</span>
         </label>
-        <div class="drop-zone" id="dropDisb" data-accept=".csv,.xlsx,.xls">
-          <p>Drop CSV/XLSX or click to choose</p>
-          <input type="file" id="fileDisb" accept=".csv,.xlsx,.xls" hidden>
+        <div class="drop-zone" id="dropDisb" data-accept=".csv,.xlsx,.xls" data-multi="true">
+          <p>Drop CSV/XLSX or click to choose (multiple files OK)</p>
+          <input type="file" id="fileDisb" accept=".csv,.xlsx,.xls" hidden multiple>
         </div>
         <div class="preview" id="previewDisb" hidden></div>
         <p class="hint"><a href="./templates/disbursements_template.xlsx" download>Download blank template</a></p>
@@ -210,14 +210,121 @@
           <strong>Outstanding debts</strong>
           <span class="badge optional">Optional</span>
         </label>
-        <div class="drop-zone" id="dropDebts" data-accept=".csv,.xlsx,.xls">
-          <p>Drop CSV/XLSX or click to choose</p>
-          <input type="file" id="fileDebts" accept=".csv,.xlsx,.xls" hidden>
+        <div class="drop-zone" id="dropDebts" data-accept=".csv,.xlsx,.xls" data-multi="true">
+          <p>Drop CSV/XLSX or click to choose (multiple files OK)</p>
+          <input type="file" id="fileDebts" accept=".csv,.xlsx,.xls" hidden multiple>
         </div>
         <div class="preview" id="previewDebts" hidden></div>
         <p class="hint"><a href="./templates/debts_template.xlsx" download>Download blank template</a></p>
       </div>
     </div>
+
+    <!-- Manual entry forms (expandable) -->
+    <details class="manual-entry" id="manualDonor">
+      <summary>+ Add a single contribution (check, wire, in-kind, etc.)</summary>
+      <div class="manual-form grid-2" id="formDonor">
+        <label><span>Date</span>         <input type="date" data-field="date"></label>
+        <label><span>Amount ($)</span>   <input type="number" step="0.01" data-field="amount"></label>
+        <label><span>First name</span>   <input type="text" data-field="first" placeholder="Leave blank for PACs/orgs"></label>
+        <label><span>Last name / org</span> <input type="text" data-field="last" required></label>
+        <label class="col-span-2"><span>Address</span> <input type="text" data-field="address"></label>
+        <label><span>City</span>         <input type="text" data-field="city"></label>
+        <label><span>State</span>        <input type="text" data-field="state" maxlength="2" placeholder="AZ"></label>
+        <label><span>ZIP</span>          <input type="text" data-field="zip" maxlength="10"></label>
+        <label>
+          <span>Kind</span>
+          <select data-field="kind">
+            <option value="cash">Cash (check / card / wire / ACH)</option>
+            <option value="in_kind">In-kind (goods / services at FMV)</option>
+            <option value="loan">Loan</option>
+          </select>
+        </label>
+        <label>
+          <span>Donor type</span>
+          <select data-field="donor_type">
+            <option value="individual">Individual</option>
+            <option value="pac">PAC</option>
+            <option value="party">Political party</option>
+            <option value="corp">Corporation / LLC</option>
+            <option value="union">Labor organization</option>
+            <option value="candidate">Candidate committee</option>
+            <option value="self">Candidate's personal funds</option>
+          </select>
+        </label>
+        <label><span>Occupation</span>   <input type="text" data-field="occupation"></label>
+        <label><span>Employer</span>     <input type="text" data-field="employer"></label>
+        <label><span>PAC / Committee ID</span> <input type="text" data-field="pac_id" placeholder="FEC or AZ ID (if PAC/party)"></label>
+        <label class="col-span-2"><span>Note / in-kind description</span> <input type="text" data-field="note" placeholder="What was contributed (required for in-kind)"></label>
+        <div class="col-span-2">
+          <button type="button" class="btn" id="btnAddDonor">Add contribution</button>
+        </div>
+      </div>
+      <table class="entry-table" id="tableDonor" hidden>
+        <thead><tr><th>Date</th><th>Name</th><th>Amount</th><th>Kind</th><th>Type</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
+
+    <details class="manual-entry" id="manualDisb">
+      <summary>+ Add a single disbursement</summary>
+      <div class="manual-form grid-2" id="formDisb">
+        <label><span>Date</span>         <input type="date" data-field="date"></label>
+        <label><span>Amount ($)</span>   <input type="number" step="0.01" data-field="amount"></label>
+        <label><span>Payee</span>        <input type="text" data-field="payee" required></label>
+        <label><span>Category</span>     <input type="text" data-field="category" placeholder="Print / mailer, SaaS, food, etc."></label>
+        <label class="col-span-2"><span>Address</span> <input type="text" data-field="address"></label>
+        <label><span>City</span>         <input type="text" data-field="city"></label>
+        <label><span>State</span>        <input type="text" data-field="state" maxlength="2"></label>
+        <label><span>ZIP</span>          <input type="text" data-field="zip" maxlength="10"></label>
+        <label>
+          <span>Payment method</span>
+          <select data-field="payment_method">
+            <option value="cash">Cash / check / ACH / wire / debit</option>
+            <option value="credit">Credit card</option>
+          </select>
+        </label>
+        <label><span>Schedule</span>
+          <select data-field="schedule">
+            <option value="B(1)">B(1) — Operating expenses</option>
+            <option value="B(10)">B(10) — Joint fundraising / shared expense</option>
+            <option value="B(2a)">B(2a) — Contribution to candidate committee</option>
+            <option value="B(2b)">B(2b) — Contribution to PAC</option>
+            <option value="B(2c)">B(2c) — Contribution to political party</option>
+          </select>
+        </label>
+        <label class="col-span-2"><span>Note</span> <input type="text" data-field="note"></label>
+        <div class="col-span-2">
+          <button type="button" class="btn" id="btnAddDisb">Add disbursement</button>
+        </div>
+      </div>
+      <table class="entry-table" id="tableDisb" hidden>
+        <thead><tr><th>Date</th><th>Payee</th><th>Amount</th><th>Category</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
+
+    <details class="manual-entry" id="manualDebt">
+      <summary>+ Add an outstanding debt</summary>
+      <div class="manual-form grid-2" id="formDebt">
+        <label><span>Date incurred</span> <input type="date" data-field="date_incurred"></label>
+        <label><span>Amount outstanding ($)</span> <input type="number" step="0.01" data-field="amount_outstanding"></label>
+        <label><span>Creditor</span>     <input type="text" data-field="creditor" required></label>
+        <label><span>Type of debt</span> <input type="text" data-field="type_of_debt" placeholder="Print / mailer, venue rental, etc."></label>
+        <label class="col-span-2"><span>Address</span> <input type="text" data-field="address"></label>
+        <label><span>City</span>         <input type="text" data-field="city"></label>
+        <label><span>State</span>        <input type="text" data-field="state" maxlength="2"></label>
+        <label><span>ZIP</span>          <input type="text" data-field="zip" maxlength="10"></label>
+        <label><span>Expected payment date</span> <input type="date" data-field="scheduled_payment_date"></label>
+        <label class="col-span-2"><span>Note</span> <input type="text" data-field="note"></label>
+        <div class="col-span-2">
+          <button type="button" class="btn" id="btnAddDebt">Add debt</button>
+        </div>
+      </div>
+      <table class="entry-table" id="tableDebt" hidden>
+        <thead><tr><th>Date</th><th>Creditor</th><th>Amount</th><th>Type</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </details>
   </section>
 
   <!-- =============== SIGNATURE =============== -->

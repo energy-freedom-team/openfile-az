@@ -17,10 +17,15 @@ export const state = {
   },
   files: {
     config: null,
-    donors: null,
-    disbursements: null,
-    debts: null,
+    donors: [],          // array of File objects (multi-file support)
+    disbursements: [],
+    debts: [],
     sig: null,
+  },
+  manualEntries: {
+    donors: [],          // array of {date, first, last, amount, ...} objects
+    disbursements: [],
+    debts: [],
   },
   sigMode: "cursive",                // "cursive" | "image"
 };

@@ -248,6 +248,72 @@ input:focus, select:focus {
   border-color: var(--accent);
 }
 
+/* Manual entry ------------------------------------------------- */
+.manual-entry {
+  margin-top: 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.manual-entry summary {
+  padding: .75rem 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: .95rem;
+  color: var(--accent);
+  background: var(--bg);
+  list-style: none;
+  user-select: none;
+}
+.manual-entry summary::-webkit-details-marker { display: none; }
+.manual-entry summary::before {
+  content: "▸ ";
+  display: inline;
+}
+.manual-entry[open] summary::before { content: "▾ "; }
+.manual-entry[open] summary {
+  border-bottom: 1px solid var(--border);
+}
+.manual-form {
+  padding: 1rem;
+  background: var(--bg-muted);
+}
+.manual-form label span {
+  font-size: .8rem;
+  color: var(--fg-muted);
+  font-weight: 500;
+}
+
+.entry-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .85rem;
+}
+.entry-table th {
+  text-align: left;
+  padding: .5rem .75rem;
+  background: var(--bg-muted);
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: .8rem;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}
+.entry-table td {
+  padding: .4rem .75rem;
+  border-bottom: 1px solid var(--border);
+}
+.entry-table .btn-remove {
+  background: none;
+  border: none;
+  color: var(--error);
+  cursor: pointer;
+  font-size: .85rem;
+  padding: .2rem .5rem;
+}
+.entry-table .btn-remove:hover { text-decoration: underline; }
+
 /* Signature ---------------------------------------------------- */
 .sig-options { display: flex; flex-direction: column; gap: .75rem; }
 .sig-option {
