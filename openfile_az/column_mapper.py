@@ -435,10 +435,125 @@ def detect_debt_columns(headers, user_overrides=None) -> MappingResult:
     return detect_columns(headers, DEBT_FIELDS, user_overrides)
 
 
+# ---------------------------------------------------------------------------
+# Multi-file merge: accept N source files, map each independently, merge
+# ---------------------------------------------------------------------------
+
+@dataclass
+class MergeResult:
+    """Outcome of merging multiple source files into one normalized DataFrame.
+
+    Attributes:
+        df: the merged DataFrame with canonical columns + _source_file tag.
+        per_file: list of (filename, MappingResult, row_count) for each input.
+        duplicates: list of (row_a_idx, row_b_idx, match_keys) for potential
+            duplicate rows across files. Only flagged, never auto-removed.
+        warnings: human-readable strings about merge issues.
+    """
+    df: object  # pandas DataFrame — typed as object to avoid import at module level
+    per_file: list[tuple[str, MappingResult, int]] = field(default_factory=list)
+    duplicates: list[tuple[int, int, dict]] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+
+    def is_complete(self) -> bool:
+        return all(r.is_complete() for _, r, _ in self.per_file)
+
+    def total_rows(self) -> int:
+        return sum(n for _, _, n in self.per_file)
+
+
+def merge_sources(
+    files: list[tuple[str, object]],  # list of (filename, pandas DataFrame)
+    detect_fn,                        # detect_donor_columns / detect_disbursement_columns / etc.
+    user_overrides: dict[str, dict[str, str]] | None = None,
+) -> MergeResult:
+    """Map each file's columns independently, normalize, concat, flag duplicates.
+
+    Args:
+        files: list of (filename, DataFrame) tuples. Each DataFrame has the
+            file's native column headers.
+        detect_fn: one of detect_donor_columns, detect_disbursement_columns,
+            detect_debt_columns.
+        user_overrides: optional dict of {filename: {canonical: source_col}}
+            for per-file manual column picks (e.g., from a UI confirmation
+            dialog when the mapper flagged an ambiguous match).
+
+    Returns: MergeResult with the merged DataFrame, per-file diagnostics,
+        and any duplicate warnings.
+    """
+    import pandas as pd
+
+    user_overrides = user_overrides or {}
+    per_file = []
+    frames = []
+    warnings = []
+
+    for fname, df in files:
+        overrides = user_overrides.get(fname)
+        result = detect_fn(df.columns.tolist(), user_overrides=overrides)
+        per_file.append((fname, result, len(df)))
+
+        if not result.is_complete():
+            warnings.append(
+                f"{fname}: missing required columns {result.missing} — "
+                f"rows from this file will have blank values for those fields"
+            )
+
+        normalized = result.apply(df)
+        normalized["_source_file"] = fname
+        frames.append(normalized)
+
+    if not frames:
+        merged = pd.DataFrame()
+    else:
+        merged = pd.concat(frames, ignore_index=True)
+
+    # Flag potential duplicates across files: same (last, amount, date) within
+    # a tolerance. Only flags — never removes. The user / treasurer confirms.
+    duplicates = []
+    if len(frames) > 1 and len(merged) > 0:
+        dup_keys = ["last", "amount", "date"]
+        available = [k for k in dup_keys if k in merged.columns]
+        if available:
+            # Normalize for comparison
+            check = merged[available + ["_source_file"]].copy()
+            for col in available:
+                check[col] = check[col].astype(str).str.strip().str.lower()
+
+            seen = {}  # (tuple of key values) → first row index
+            for idx, row in check.iterrows():
+                key = tuple(row[c] for c in available)
+                if key in seen:
+                    first_idx = seen[key]
+                    # Only flag cross-file duplicates (same file = intentional)
+                    if row["_source_file"] != check.at[first_idx, "_source_file"]:
+                        duplicates.append((
+                            first_idx, idx,
+                            {c: row[c] for c in available},
+                        ))
+                else:
+                    seen[key] = idx
+
+    if duplicates:
+        warnings.append(
+            f"Found {len(duplicates)} potential duplicate(s) across files — "
+            f"same (last, amount, date). Review before filing."
+        )
+
+    return MergeResult(
+        df=merged,
+        per_file=per_file,
+        duplicates=duplicates,
+        warnings=warnings,
+    )
+
+
 __all__ = [
     "MappingResult",
+    "MergeResult",
     "normalize_header",
     "detect_columns",
+    "merge_sources",
     "detect_donor_columns",
     "detect_disbursement_columns",
     "detect_debt_columns",
